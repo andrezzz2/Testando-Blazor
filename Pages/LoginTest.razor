@@ -1,0 +1,39 @@
+@page "/loginTest"
+@inject NavigationManager Navigation
+
+<PageTitle>Login Test</PageTitle>
+
+<h1>Login Test</h1>
+
+<div class="mb-3">
+    <label for="email" class="form-label">E-mail:</label>
+
+    <input class="form-control"
+            name="email"
+            type="email"
+            placeholder="Enter your e-mail"
+    />
+
+</div>
+
+
+<div class="mb-3">
+    <label for="password" class="form-label">Password:</label>
+
+    <input class="form-control"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+    />
+
+</div>
+
+<button class="btn btn-primary" @onclick="login">Register</button>
+
+@code {
+
+    private void login() {
+        Navigation.NavigateTo("fetchdata");
+    }
+    
+}

@@ -1,0 +1,138 @@
+@page "/registrationTest"
+@inject NavigationManager Navigation
+
+<PageTitle>Registration Test</PageTitle>
+
+<h1>Registration Test</h1>
+
+<!--<form action=""" method="post">-->
+
+    <div class="mb-3">
+        <label for="email" class="form-label">E-mail:</label>
+
+        <input class="form-control"
+                name="email"
+                type="email"
+                @bind-value="@currentEmail" 
+                @bind-value:event="oninput" 
+                @onchange="isEmailValid" 
+                placeholder="Enter your e-mail"
+        />
+
+        <span role="status">@validationEmailMessage</span>
+
+        @if(validationEmailMessage.Equals("e-mail válido")){
+            <span class="oi oi-circle-check"></span>
+        } else if(validationEmailMessage.Equals("e-mail inválido")) {
+            <span class="oi oi-circle-x"></span>
+        } 
+    </div>
+
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+
+        <input class="form-control"
+                name="password"
+                type="password"
+                @bind-value="@currentPassword" 
+                @bind-value:event="oninput" 
+                @onchange="isPasswordValid" 
+                placeholder="Enter your password"
+        />
+
+        <span role="status">@validationPasswordMessage</span>
+
+        @if(validationPasswordMessage.Equals("senha válida")){
+            <span class="oi oi-circle-check"></span>
+        } else if(validationPasswordMessage.Equals("senha inválida")) {
+            <span class="oi oi-circle-x"></span>
+        } else {
+            <div class="form-text">It must have at least</div>
+            <div class="form-text">8 characters</div>
+            <div class="form-text">1 lower case letter</div>
+            <div class="form-text">1 upper case letter</div>
+            <div class="form-text">1 digit</div>
+            <div class="form-text">1 special character</div>
+        }
+    </div>
+
+    @if(validEmail && validPassword){
+        <div class="mb-3 form-check">
+            <input type="checkbox" 
+                class="form-check-input" 
+                name="checkbox" 
+                @bind-value="@checkboxStatus" 
+                @bind-value:event="oninput" 
+                @onchange="enableButton">
+            <label class="form-check-label" for="checkbox" >Check me out</label>
+        </div>
+    }
+
+    <button class="btn btn-primary" @onclick="register" disabled=@disabledButton>Register</button>
+
+<!--</form>-->
+
+@code {
+    private string currentEmail = "";
+    private string currentPassword = "";
+    private Boolean validEmail = false;
+    private Boolean validPassword = false;
+    private string validationEmailMessage = "";
+    private string validationPasswordMessage = "";
+
+    private Boolean checkboxStatus = false;
+    private Boolean disabledButton = true;
+
+    Regex validEmailRegex = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
+    Regex hasNumber = new Regex(@"[0-9]+");
+    Regex hasUpperChar = new Regex(@"[A-Z]+");
+    Regex hasLowerChar = new Regex(@"[a-z]+");
+    Regex hasSymbols = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+    Regex hasMiniMaxChars = new Regex(@".{8,20}");
+    
+    private void isEmailValid() {
+
+        //Email deve conter o @ mas não pode ser nem início nem no final da string
+        if(validEmailRegex.IsMatch(currentEmail)){
+            validationEmailMessage = "e-mail válido";
+            validEmail = true;
+        } else {
+            validationEmailMessage = "e-mail inválido";
+            validEmail = false;
+            disabledButton = true;
+        }
+
+    }
+    private void isPasswordValid() {
+
+        if (hasNumber.IsMatch(currentPassword) 
+            && hasUpperChar.IsMatch(currentPassword)
+            && hasLowerChar.IsMatch(currentPassword)
+            && hasSymbols.IsMatch(currentPassword)
+            && hasMiniMaxChars.IsMatch(currentPassword)){
+            validationPasswordMessage = "senha válida";
+            validPassword = true;
+        } else {
+            validationPasswordMessage = "senha inválida";
+            validPassword = false;
+            disabledButton = true;
+        }
+
+    }
+
+    private void enableButton (){
+
+        if(checkboxStatus==true)
+            disabledButton = false;
+        else
+            disabledButton = true;
+
+    }
+
+    private void register (){
+
+        Navigation.NavigateTo("loginTest");
+
+    }
+}
